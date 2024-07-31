@@ -173,7 +173,7 @@ const Auth = () => {
             <CardHeader>
               <CardTitle>Sign In</CardTitle>
               <CardDescription>
-                Make your sign-in here. Click save when you're done.
+                Make your sign-in here. Click save when you are done.
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleSignInSubmit}>
@@ -211,7 +211,7 @@ const Auth = () => {
             <CardHeader>
               <CardTitle>Sign Up</CardTitle>
               <CardDescription>
-                Sign up here. After saving, you'll be logged in.
+                Sign up here. After saving, you will be logged in.
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleSignUpSubmit}>
