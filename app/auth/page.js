@@ -162,7 +162,7 @@ const Auth = () => {
   }, [router, pathname]);
 
   return (
-    <div className='flex justify-center h-[90vh] w-full pt-4'>
+    <div className='flex justify-center h-[90vh] w-full p-4 lg:p-0'>
       <Tabs defaultValue="signin" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signin">Sign In</TabsTrigger>

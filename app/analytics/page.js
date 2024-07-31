@@ -94,7 +94,7 @@ const Analytics = () => {
         </div>
       </div>
 
-      <div className=' w-[70%] border border-foreground/40  rounded-lg'>
+      <div className=' w-[100%] lg:w-[70%] border border-foreground/40  rounded-lg'>
         <DataTable columns={columns} data={data} />
       </div>
       <div>fghm</div>

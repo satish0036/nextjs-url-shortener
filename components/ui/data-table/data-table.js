@@ -54,7 +54,7 @@ export function DataTable({
         value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
         placeholder="Search..."
-        className="px-4 py-2 min-w-[320px] max-w-[480px] border text-card-foreground rounded-md"
+        className="px-4 py-2 min-w-[280px] max-w-[480px] border text-card-foreground rounded-md"
       />
 
       <div className="border border-foreground/40 rounded-md">
