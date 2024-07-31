@@ -39,7 +39,6 @@ const Auth = () => {
     password: "",
   });
 
-  const [isSignIn, setIsSignIn] = useState(true);
 
   const handleSignInChange = (e) => {
     const { name, value } = e.target;
@@ -80,7 +79,7 @@ const Auth = () => {
     // Handle the response
     if (response.ok) {
       toast({
-        title: data?.message +'🎉',
+        title: `${data?.message }🎉`,
         description: "You have logged in successfully.",
       })
       
@@ -120,7 +119,7 @@ const Auth = () => {
     // Handle the response
     if (response.ok) {
       toast({
-        title: data?.message+ '🎉',
+        title: `${data?.message} 🎉`,
         description: "You have signed up successfully. Welcome!",
       })
     } else {

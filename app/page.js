@@ -82,7 +82,7 @@ if(!formData.name || !formData.originalLink){
   };
 
   const handleanalyticsClick = () => {
-    router.push('/analytics');
+    router.push("/analytics");
   };
 
 
@@ -113,8 +113,8 @@ if(!formData.name || !formData.originalLink){
       </div>
 
       {
-        data?.map((data) =>
-          <div className='rounded-lg border bg-card text-card-foreground  flex justify-between items-center w-[100%] gap-2 lg:w-[70%] shadow-sm p-2 lg:p-4' >
+        data?.map((data,index) =>
+          <div key={index} className='rounded-lg border bg-card text-card-foreground  flex justify-between items-center w-[100%] gap-2 lg:w-[70%] shadow-sm p-2 lg:p-4' >
             <div className=' flex w-[50%] lg:w-[15%] whitespace-nowrap overflow-hidden mx-2'>{data.name}</div>
 
             <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.originalLink}</div>
