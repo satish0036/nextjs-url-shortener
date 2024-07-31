@@ -26,7 +26,8 @@ import { isTokenValid } from '@/utils/auth';
 
 const Auth = () => {
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
+
   // Separate state for sign-in and sign-up forms
   const [signInData, setSignInData] = useState({
     username: "",
@@ -38,7 +39,6 @@ const Auth = () => {
     username: "",
     password: "",
   });
-
 
   const handleSignInChange = (e) => {
     const { name, value } = e.target;
@@ -61,33 +61,40 @@ const Auth = () => {
 
     // Validate sign-in form
     if (!signInData.username || !signInData.password) {
-
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
         description: "Please fill in all the required fields.",
-      })
+      });
       return;
     }
 
-    // Simulated API call for sign-in
-    const response = await loginUser(signInData)
-    const data = await response.json();
-    // console.log('API Response from login:', data);
-    Cookies.set('jwt_token', data.token, { expires: 12 / 24 }); 
-    router.push('/');
-    // Handle the response
-    if (response.ok) {
-      toast({
-        title: `${data?.message }🎉`,
-        description: "You have logged in successfully.",
-      })
-      
-    } else {
+    try {
+      // Simulated API call for sign-in
+      const response = await loginUser(signInData);
+      const data = await response.json();
+
+      // Handle the response
+      if (response.ok) {
+        Cookies.set('jwt_token', data.token, { expires: 12 / 24 });
+        router.push('/');
+        toast({
+          title: `${data?.message} 🎉`,
+          description: "You have logged in successfully.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: data?.message,
+        });
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
       toast({
         variant: "destructive",
-        title: data?.message,
-      })
+        title: "Login Failed",
+        description: "There was an error processing your request.",
+      });
     }
 
     // Reset sign-in form data
@@ -96,8 +103,6 @@ const Auth = () => {
       password: "",
     });
   };
-
-
 
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
@@ -108,26 +113,35 @@ const Auth = () => {
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
         description: "Please fill in all the required fields.",
-      })
+      });
       return;
     }
 
-    // Simulated API call for sign-up
-    const response = await registerUser(signUpData)
-    const data = await response.json();
-    console.log('API Response:', data);
-    // Handle the response
-    if (response.ok) {
-      toast({
-        title: `${data?.message} 🎉`,
-        description: "You have signed up successfully. Welcome!",
-      })
-    } else {
+    try {
+      // Simulated API call for sign-up
+      const response = await registerUser(signUpData);
+      const data = await response.json();
+
+      // Handle the response
+      if (response.ok) {
+        toast({
+          title: `${data?.message} 🎉`,
+          description: "You have signed up successfully. Welcome!",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: data?.message,
+          description: data?.error?.sqlState === "23000" ? "User Name already exists." : data?.error?.sqlMessage,
+        });
+      }
+    } catch (error) {
+      console.error('Error during signup:', error);
       toast({
         variant: "destructive",
-        title: data?.message,
-        description: data?.error?.sqlState === "23000" ? "User Name already Exist" : data?.error?.sqlMessage,
-      })
+        title: "Signup Failed",
+        description: "There was an error processing your request.",
+      });
     }
 
     // Reset sign-up form data
@@ -139,10 +153,7 @@ const Auth = () => {
   };
 
   const pathname = usePathname();
-
-  console.log("pathname",pathname)
-  const isTokenValid1=isTokenValid()
-  console.log("isTokenValid",isTokenValid1)
+  const isTokenValid1 = isTokenValid();
 
   useEffect(() => {
     if (isTokenValid() && pathname === '/auth') {
@@ -154,8 +165,8 @@ const Auth = () => {
     <div className='flex justify-center h-[90vh] w-full pt-4'>
       <Tabs defaultValue="signin" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="signin" onClick={() => setIsSignIn(true)}>Sign In</TabsTrigger>
-          <TabsTrigger value="signup" onClick={() => setIsSignIn(false)}>Sign Up</TabsTrigger>
+          <TabsTrigger value="signin">Sign In</TabsTrigger>
+          <TabsTrigger value="signup">Sign Up</TabsTrigger>
         </TabsList>
         <TabsContent value="signin">
           <Card>
@@ -165,32 +176,34 @@ const Auth = () => {
                 Make your sign-in here. Click save when you're done.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="setusername">Username</Label>
-                <Input
-                  id="setusername"
-                  name="username"
-                  value={signInData.username}
-                  required
-                  onChange={handleSignInChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="setpassword">Password</Label>
-                <Input
-                  id="setpassword"
-                  name="password"
-                  type="password"
-                  value={signInData.password}
-                  required
-                  onChange={handleSignInChange}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" onClick={handleSignInSubmit}>Sign In</Button>
-            </CardFooter>
+            <form onSubmit={handleSignInSubmit}>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="setusername">Username</Label>
+                  <Input
+                    id="setusername"
+                    name="username"
+                    value={signInData.username}
+                    required
+                    onChange={handleSignInChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="setpassword">Password</Label>
+                  <Input
+                    id="setpassword"
+                    name="password"
+                    type="password"
+                    value={signInData.password}
+                    required
+                    onChange={handleSignInChange}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button type="submit">Sign In</Button>
+              </CardFooter>
+            </form>
           </Card>
         </TabsContent>
         <TabsContent value="signup">
@@ -201,42 +214,44 @@ const Auth = () => {
                 Sign up here. After saving, you'll be logged in.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={signUpData.name}
-                  required
-                  onChange={handleSignUpChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={signUpData.username}
-                  required
-                  onChange={handleSignUpChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={signUpData.password}
-                  required
-                  onChange={handleSignUpChange}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" onClick={handleSignUpSubmit}>Sign Up</Button>
-            </CardFooter>
+            <form onSubmit={handleSignUpSubmit}>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={signUpData.name}
+                    required
+                    onChange={handleSignUpChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    name="username"
+                    value={signUpData.username}
+                    required
+                    onChange={handleSignUpChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={signUpData.password}
+                    required
+                    onChange={handleSignUpChange}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button type="submit">Sign Up</Button>
+              </CardFooter>
+            </form>
           </Card>
         </TabsContent>
       </Tabs>
