@@ -42,6 +42,11 @@ const Header = () => {
         router.push("/")
     }
 
+    const handleProfileClick = () => {
+        router.push("/profile")
+    }
+
+
 
     return (
         <div className='text-primary-foreground  px-4 w-full h-[10vh] flex justify-between content-center items-center'>
@@ -77,7 +82,7 @@ const Header = () => {
 
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem >
+                                <DropdownMenuItem onClick={handleProfileClick} >
                                     My Profile
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={handleLogOut}>
