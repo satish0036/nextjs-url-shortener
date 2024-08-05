@@ -11,6 +11,15 @@ import { useToast } from '@/components/ui/use-toast'
 import { getAllUrlOfUser, registerAuthUrl, registerUrl } from '@/server-action/url'
 import { isTokenValid } from '@/utils/auth'
 import Link from 'next/link'
+import CopyLink from '@/utils/CopyLink'
+import QRCodeGenerator from '@/utils/QRCodeGenerator'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+const Backend_Url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 
 
@@ -19,18 +28,18 @@ const Profile = () => {
     const { toast } = useToast()
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([
-        {
-            "id": 1,
-            "name": "PrePlexity",
-            "originalUrl": "https://www.perplexity.ai/",
-            "urlKey": "1QEELi"
-        },
-        {
-            "id": 2,
-            "name": "PrePlexity",
-            "originalUrl": "https://www.perplexity.ai/search/while-making-build-why-i-am-ge-WL51pxFmS.WBK74BoVV9Kg",
-            "urlKey": "oCbVgc"
-        },
+        // {
+        //     "id": 1,
+        //     "name": "PrePlexity",
+        //     "originalUrl": "https://www.perplexity.ai/",
+        //     "urlKey": "1QEELi"
+        // },
+        // {
+        //     "id": 2,
+        //     "name": "PrePlexity",
+        //     "originalUrl": "https://www.perplexity.ai/search/while-making-build-why-i-am-ge-WL51pxFmS.WBK74BoVV9Kg",
+        //     "urlKey": "oCbVgc"
+        // },
     ]
     );
 
@@ -67,11 +76,6 @@ const Profile = () => {
 
         const responceData = await response.json();
         console.log("res from api", responceData)
-
-
-
-
-
         const apiResponse = {
             "id": data.length + 1,
             "name": formData.name,
@@ -86,9 +90,9 @@ const Profile = () => {
             originalUrl: "",
         });
         toast({
-            title: "Uh oh! Something went wrong.",
-            description: "You have not filled all field",
-        })
+            title: "Great 👍 ",
+            description: "URL has been created successfully ✅",
+          })
     };
 
     const handleanalyticsClick = (e) => {
@@ -116,7 +120,9 @@ const Profile = () => {
 
         };
         fetchData()
-    }, [])
+    }, [formData])
+
+    const qrValue = `https://ui.shadcn.com/docs/components/popover`;
 
     if (loading) {
         return <p className=' w-full flex justify-between items-center'>Loading...</p>;
@@ -125,8 +131,6 @@ const Profile = () => {
     if (!data) {
         return <p className=' w-full flex justify-between items-center'>No data found.</p>;
     }
-
-
 
 
     return (
@@ -158,15 +162,31 @@ const Profile = () => {
             {
                 data?.map((data, index) =>
                     <div key={index} className='rounded-lg border bg-card text-card-foreground  flex justify-between items-center w-[100%] gap-2 lg:w-[70%] shadow-sm p-2 lg:p-4' >
-                        <div className=' flex w-[50%] lg:w-[15%] whitespace-nowrap overflow-hidden mx-2'>{data.name}</div>
+                        <div className=' flex w-[30%] lg:w-[15%] whitespace-nowrap overflow-hidden mx-2'>{data.name}</div>
 
-                        <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.originalUrl}</div>
+                        <div className=' hidden md:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.originalUrl}</div>
                         <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.urlKey}</div>
 
-                        <Button variant="secondary">   <QrCodeIcon /></Button>
+                        {/* <Button variant="secondary">   <QrCodeIcon /></Button> */}
+                        {/* <QRCodeGenerator link={`${Backend_Url}/urls/${data?.urlKey}`} /> */}
+
+                        <Popover>
+                            <PopoverTrigger>
+                                <Button variant="secondary">
+                                    <QrCodeIcon />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                            <QRCodeGenerator value={`${Backend_Url}/urls/${data?.urlKey}`} name={data.name} />
+                            </PopoverContent>
+                        </Popover>
+
 
                         <Button onClick={() => handleanalyticsClick(data.urlKey)} variant="secondary"><ChartNoAxesColumn /></Button>
-                        <Button className=" font-semibold text-blue-600 hover:text-blue-500" variant="ghost">Copy</Button>
+                        {/* <Button className=" font-semibold text-blue-600 hover:text-blue-500" variant="ghost">Copy</Button> */}
+
+                        <Button variant="secondary"> <CopyLink link={`${Backend_Url}/urls/${data?.urlKey}`} /></Button>
+
 
 
 
@@ -180,9 +200,9 @@ const Profile = () => {
             <div className='rounded-lg border bg-card text-card-foreground  flex flex-col gap-2 items-center w-[100%] lg:w-[70%] shadow-lg p-4 lg:p-8'>
                 <p className=' font-semibold text-xl'>Want More? Try Premium Features!</p>
 
-                <p>Custom short links, powerful dashboard, detailed analytics, API, UTM builder, QR codes,</p>
+                <p>Custom short links, powerful dashboard, detailed analytics, API, QR codes,</p>
                 <p>browser extension, app integrations and support</p>
-                <Button> <Link href={"/auth"} >Create Account</Link ></Button>
+               
             </div>
 
 

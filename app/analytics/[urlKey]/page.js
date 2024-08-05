@@ -28,34 +28,34 @@ const Analytics = () => {
   const [data, setData] = useState([
 
     {
-      city:"Kolkata",
-      country:"IN",
-      created_at:"2024-08-02T17:11:17.000Z",
-      device:"Laptop",
-      ip_address:"::1",
-      latitude:22.518,
-      longitude:88.3832,
-      urlKey:"1QEELi"
+      city: "Kolkata",
+      country: "IN",
+      created_at: "2024-08-02T17:11:17.000Z",
+      device: "Laptop",
+      ip_address: "::1",
+      latitude: 22.518,
+      longitude: 88.3832,
+      urlKey: "1QEELi"
     },
     {
-      city:"Kolkata",
-      country:"IN",
-      created_at:"2024-08-02T17:11:17.000Z",
-      device:"Mobile",
-      ip_address:"::1",
-      latitude:22.518,
-      longitude:88.3832,
-      urlKey:"1QEELi"
+      city: "Kolkata",
+      country: "IN",
+      created_at: "2024-08-02T17:11:17.000Z",
+      device: "Mobile",
+      ip_address: "::1",
+      latitude: 22.518,
+      longitude: 88.3832,
+      urlKey: "1QEELi"
     },
     {
-      city:"Patna",
-      country:"IN",
-      created_at:"2024-08-03T17:11:17.000Z",
-      device:"Mobile",
-      ip_address:"::1",
-      latitude:222.518,
-      longitude:828.3832,
-      urlKey:"1QEELi"
+      city: "Patna",
+      country: "IN",
+      created_at: "2024-08-03T17:11:17.000Z",
+      device: "Mobile",
+      ip_address: "::1",
+      latitude: 222.518,
+      longitude: 828.3832,
+      urlKey: "1QEELi"
     },
   ]);
   const [aboutUrl, setAboutUrl] = useState(null);
@@ -71,7 +71,7 @@ const Analytics = () => {
           const data = await response?.json();
           console.log("resp11", data);
           if (response.ok) {
-            console.log("data from api",data)
+            console.log("data from api", data)
             setData(data);
           } else {
             console.error('Error fetching data:', data);
@@ -127,19 +127,19 @@ const Analytics = () => {
     <div className=' w-full h-[90vh] flex flex-col gap-6 items-center p-4  mb-5'>
 
       <div className='  flex flex-col gap-2 w-[100%] lg:w-[70%]'>
-        <div className=' flex justify-between'>
-          <div className=' flex gap-2'>
-            <Link />
+        <div className=' flex justify-between flex-wrap gap-2'>
+          <div className=' flex gap-2 w-[100%] lg:w-[50%] whitespace-nowrap overflow-hidden'>
+            <CopyLink link={linkToCopy} />
             <div>{Backend_Url}/urls/{aboutUrl?.urlKey}</div>
           </div>
-          <div className=' flex gap-4'>
+          <div className=' flex gap-4  w-[70%] lg:w-[40%] lg:justify-end whitespace-nowrap overflow-hidden'>
             {/* <Link2 className=' w-8 h-8' /> */}
-            <p>{aboutUrl?.name}</p>
-            <CopyLink link={linkToCopy} />
+            <p className=''>{aboutUrl?.name}</p>
+           
           </div>
 
         </div>
-        <p>{aboutUrl?.originalUrl}</p>
+        <p className='w-[100%] whitespace-nowrap overflow-hidden'>{aboutUrl?.originalUrl}</p>
         <p>Total Visit :- {data.length} </p>
         <div className=' flex gap-2'>
           <CalendarCheck />
@@ -159,12 +159,12 @@ const Analytics = () => {
 
         </TabsContent>
         <TabsContent value="charts">
-          <MonthelyChartsComponent data={data}/>
-          <DayChartComponent data={data}/>
-          <CountryChartsComponent data={data}/>
+          <MonthelyChartsComponent data={data} />
+          <DayChartComponent data={data} />
+          <CountryChartsComponent data={data} />
         </TabsContent>
       </Tabs>
-      
+
 
     </div>
   )

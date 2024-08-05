@@ -1,9 +1,10 @@
 import Cookies from 'js-cookie';
 const token = Cookies.get('jwt_token');
+const Backend_Url = process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function registerUrl(data) {
-    console.log(data)
+    // console.log(data)
     try {
-        const responce = await fetch("http://localhost:8800/api/urls/create", {
+        const responce = await fetch(`${Backend_Url}/urls/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "Application/json",
@@ -19,13 +20,13 @@ export async function registerUrl(data) {
 }
 
 export async function registerAuthUrl(data) {
-    console.log(data)
+    // console.log(data)
     try {
-        const responce = await fetch("http://localhost:8800/api/authurls/create", {
+        const responce = await fetch(`${Backend_Url}/authurls/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "Application/json",
-                authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ originalUrl: data.originalUrl, name: data.name }),
         })
@@ -37,9 +38,9 @@ export async function registerAuthUrl(data) {
 }
 
 export async function getAnalytics(data) {
-    console.log(data)
+    // console.log(data)
     try {
-        const responce = await fetch(`http://localhost:8800/api/urls/analytics/${data.urlKey}`, {
+        const responce = await fetch(`${Backend_Url}/urls/analytics/${data.urlKey}`, {
             method: "get",
             headers: {
                 "Content-Type": "Application/json",
@@ -47,7 +48,7 @@ export async function getAnalytics(data) {
             },
             // body: JSON.stringify({ originalUrl: data.originalUrl, name: data.name }),
         })
-        console.log(responce)
+        // console.log(responce)
         return responce;
     }
     catch (err) {
@@ -56,16 +57,16 @@ export async function getAnalytics(data) {
 }
 
 export async function getAboutUrl(data) {
-    console.log(data)
+    // console.log(data)
     try {
-        const responce = await fetch(`http://localhost:8800/api/urls/aboutUrl/${data.urlKey}`, {
+        const responce = await fetch(`${Backend_Url}/urls/aboutUrl/${data.urlKey}`, {
             method: "get",
             headers: {
                 "Content-Type": "Application/json",
                 // Authorization:`Bearer ${token}` 
             },
         })
-        console.log(responce)
+        // console.log(responce)
         return responce;
     }
     catch (err) {
@@ -80,7 +81,7 @@ export async function getAboutUrl(data) {
 export async function getAllUrlOfUser() {
     
     try {
-        const responce = await fetch(`http://localhost:8800/api/authurls/allAuthUrls`, {
+        const responce = await fetch(`${Backend_Url}/authurls/allAuthUrls`, {
             method: "get",
             headers: {
                 "Content-Type": "Application/json",

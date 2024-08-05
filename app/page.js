@@ -11,25 +11,33 @@ import { useToast } from '@/components/ui/use-toast'
 import { registerAuthUrl, registerUrl } from '@/server-action/url'
 import { isTokenValid } from '@/utils/auth'
 import Link from 'next/link'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import QRCodeGenerator from '@/utils/QRCodeGenerator'
+import CopyLink from '@/utils/CopyLink'
 
 
+const Backend_Url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const Page = () => {
   const router = useRouter();
   const { toast } = useToast()
   const [data, setData] = useState([
-    {
-      "id": 1,
-      "name": "PrePlexity",
-      "originalUrl": "https://www.perplexity.ai/",
-      "shortUrl": "1QEELi"
-    },
-    {
-      "id": 2,
-      "name": "PrePlexity",
-      "originalUrl": "https://www.perplexity.ai/search/while-making-build-why-i-am-ge-WL51pxFmS.WBK74BoVV9Kg",
-      "shortUrl": "oCbVgc"
-    },
+    // {
+    //   "id": 1,
+    //   "name": "PrePlexity",
+    //   "originalUrl": "https://www.perplexity.ai/",
+    //   "urlKey": "1QEELi"
+    // },
+    // {
+    //   "id": 2,
+    //   "name": "PrePlexity",
+    //   "originalUrl": "https://www.perplexity.ai/search/while-making-build-why-i-am-ge-WL51pxFmS.WBK74BoVV9Kg",
+    //   "urlKey": "oCbVgc"
+    // },
   ]
   );
 
@@ -49,7 +57,7 @@ const Page = () => {
 
 
 
-  const handleClick = async() => {
+  const handleClick = async () => {
     // Simulate an API call
     if (!formData.name || !formData.originalUrl) {
       toast({
@@ -60,28 +68,17 @@ const Page = () => {
       return;
     }
 
-    const response=isTokenValid() ? await registerAuthUrl(formData):await registerUrl(formData)
+    const response = isTokenValid() ? await registerAuthUrl(formData) : await registerUrl(formData)
     // const response=await registerUrl(formData)
 
     const responceData = await response.json();
-    console.log("res from api",responceData)
-
-
-
-
-
+    console.log("res from api", responceData)
     const apiResponse = {
       "id": data.length + 1,
       "name": formData.name,
       "originalUrl": formData.originalUrl,
-      "shortUrl": responceData.shortUrl
+      "urlKey": responceData.shortUrl
     };
-
-
-    // data.push(apiResponse);
-    // data.unshift(apiResponse);
-    // setData(data)
-
     setData((prevData) => [apiResponse, ...prevData]);
 
     setFormData({
@@ -89,8 +86,8 @@ const Page = () => {
       originalUrl: "",
     });
     toast({
-      title: "Uh oh! Something went wrong.",
-      description: "You have not filled all field",
+      title: "Great 👍 ",
+      description: "URL has been created successfully ✅",
     })
   };
 
@@ -123,7 +120,7 @@ const Page = () => {
         </div>
         <p>URL shortener allows to create a shortened link making it easy to share</p>
         <p>Shorten URLs powered by IndiaArticle24. Create short & memorable links in seconds.</p>
-       <Link href={"/analytics"}> <Button>Get Analytics</Button></Link>
+        <Link href={"/analytics"}> <Button>Get Analytics</Button></Link>
       </div>
 
       {
@@ -132,12 +129,23 @@ const Page = () => {
             <div className=' flex w-[50%] lg:w-[15%] whitespace-nowrap overflow-hidden mx-2'>{data.name}</div>
 
             <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.originalUrl}</div>
-            <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.shortUrl}</div>
+            <div className=' hidden lg:block w-[30%] whitespace-nowrap overflow-hidden mx-2'>{data.urlKey}</div>
 
-            <Button variant="secondary">   <QrCodeIcon /></Button>
+            {/* <Button variant="secondary">   <QrCodeIcon /></Button> */}
+            <Popover>
+              <PopoverTrigger>
+                <Button variant="secondary">
+                  <QrCodeIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <QRCodeGenerator value={`${Backend_Url}/urls/${data?.urlKey}`} name={data.name} />
+              </PopoverContent>
+            </Popover>
 
-            <Button onClick={()=>handleanalyticsClick(data.shortUrl)} variant="secondary"><ChartNoAxesColumn /></Button>
-            <Button className=" font-semibold text-blue-600 hover:text-blue-500" variant="ghost">Copy</Button>
+            <Button onClick={() => handleanalyticsClick(data.urlKey)} variant="secondary"><ChartNoAxesColumn /></Button>
+            {/* <Button className=" font-semibold text-blue-600 hover:text-blue-500" variant="ghost">Copy</Button> */}
+            <Button variant="secondary"> <CopyLink link={`${Backend_Url}/urls/${data?.urlKey}`} /></Button>
 
 
 
@@ -151,9 +159,9 @@ const Page = () => {
       <div className='rounded-lg border bg-card text-card-foreground  flex flex-col gap-2 items-center w-[100%] lg:w-[70%] shadow-lg p-4 lg:p-8'>
         <p className=' font-semibold text-xl'>Want More? Try Premium Features!</p>
 
-        <p>Custom short links, powerful dashboard, detailed analytics, API, UTM builder, QR codes,</p>
+        <p>Custom short links, powerful dashboard, detailed analytics, QR codes,</p>
         <p>browser extension, app integrations and support</p>
-      <Link href={"/auth"}>  <Button>Create Account</Button></Link>
+        <Link href={"/auth"}>  <Button>Create Account</Button></Link>
       </div>
 
 
